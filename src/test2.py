@@ -121,13 +121,12 @@ from tapeagents.orchestrator import main_loop
 
 user_question = "Using the most recent CBS data for Dutch municipalities (2023), estimate the 75th percentile (upper quartile) of standardized disposable household income in Amsterdam, given that the median income is approximately €30,100 and national income distribution suggests the 75th percentile is about 45% higher than the median. Give me only nothing other than number of result in euros"
 tape = DialogTape(steps=[UserStep(content=user_question)])
+final_tape1 = None
 
 for event in main_loop(search_agent, tape, environment):
     if event.agent_event and event.agent_event.step:
         step = event.agent_event.step
         print(f"Agent step ({step.metadata.node}):\n{step.llm_view()}\n---")
-    elif event.observation:
-        print(f"Tool call result:\n{event.observation.short_view()}\n---")
     elif event.agent_tape:
         tape = event.agent_tape
 
