@@ -1,7 +1,9 @@
-import re
 import os
-from tapeagents.llms import OpenrouterLLM
+import re
+
 from dotenv import load_dotenv
+
+from tapeagents.llms import OpenrouterLLM
 from tapeagents.dialog_tape import DialogTape, UserStep
 from tapeagents.orchestrator import main_loop
 load_dotenv()
