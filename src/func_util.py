@@ -10,7 +10,7 @@ from tapeagents.orchestrator import main_loop
 #LLM
 open_router_api_key = os.environ["OPEN_ROUTER_API_KEY"]
 llm = OpenrouterLLM(
-    model_name="meta-llama/llama-3.3-70b-instruct:free",  # https://openrouter.ai/meta-llama/llama-3.3-70b-instruct:free
+    model_name="meta-llama/llama-3.3-70b-instruct:free", 
     api_token=open_router_api_key,
     parameters={"temperature": 0.1},
 )
@@ -92,7 +92,7 @@ def run_decision_agent(decision_agent, application, poverty_level, environment, 
         f"- Child ages: {application.get('child_ages')}\n"
         f"- Partner employed: {application.get('partner_employed')}\n"
         f"- Application flags: {application.get('flags')}\n"
-        "If sensitive flag exists 'Specific human view: yes', the percentage of Based on the above, find the rate this application result in form of 'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no'"
+        "If sensitive flag exists 'Specific human view: yes', the percentage of Based on the above, find the rate this application result in form of 'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no' each stats in new line at and show firstly, on new next line, explain decision shortly in 3-5 sentence"
     )
     decision_tape = DialogTape(steps=[UserStep(content=prompt)])
     for event in main_loop(decision_agent, decision_tape, environment):

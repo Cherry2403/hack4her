@@ -92,7 +92,7 @@ poverty_agent = Agent.create(
 decision_system_prompt = (
     "You are an assistant that makes final decisions on subsidy applications. "
     "Given the poverty level, child ages, partner employment, and application flags, "
-    "If sensitive flag exists 'Specific human view: yes', the percentage of Based on the above, find the rate this application result in form of 'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no'"
+    "If sensitive flag exists 'Specific human view: yes', the percentage of Based on the above, find the rate this application result in form of 'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no' each stats in new line at and show firstly"
 )
 
 decision_agent = Agent.create(
@@ -106,7 +106,7 @@ decision_agent = Agent.create(
         StandardNode(
             name="answer",
             system_prompt=decision_system_prompt,
-            guidance="'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no'",
+            guidance="If sensitive flag exists 'Specific human view: yes', the percentage of Based on the above, find the rate this application result in form of 'Accepted rate: x% \n Decline rate: y% \n Specific human view: yes/no' each stats in new line at and show firstly",
         ),
         Stop(),
     ],
@@ -114,10 +114,11 @@ decision_agent = Agent.create(
     tools_description=environment.tools_description()
 )
 
-#USE AGENT
+#USE THE AGENT
 
 from tapeagents.dialog_tape import DialogTape, UserStep
 from tapeagents.orchestrator import main_loop
+from IPython.display import display, HTML
 
 user_question = "Using the most recent CBS data for Dutch municipalities (2023), estimate the 75th percentile (upper quartile) of standardized disposable household income in Amsterdam, given that the median income is approximately €30,100 and national income distribution suggests the 75th percentile is about 45% higher than the median. Give me only nothing other than number of result in euros"
 tape = DialogTape(steps=[UserStep(content=user_question)])
@@ -141,9 +142,10 @@ with open("data/application.json", "r") as f:
 app_id = input("Enter the application ID to check (e.g., A001): ").strip()
 application = next((app for app in data if app.get("application_id") == app_id), None)
 
-# CHECK ELIGIBLE CONDITION
+# CLASSIFYING
 if application:
     if income_eligible(agent_answer, application):
+        # CHECK ELIGIBLE CONDITION of income and employment
         print("Eligible: Household income is below the upper quartile.")
         result = ai_employment_eligible(application)
         print("AI_check_employment_eligible:", result)
@@ -153,6 +155,7 @@ if application:
             f"  Partner employed: {application.get('partner_employed', False)}"
         )
 
+        # CALCULATE MAX SUBSIDY COVERAGE
         coverage = get_subsidy_coverage(application, upper_quartile)
         print(f"Max subsidy coverage: {coverage}%")
 
