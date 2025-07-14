@@ -1,11 +1,10 @@
 import re
 import os
-import json
 from tapeagents.llms import OpenrouterLLM
 from dotenv import load_dotenv
-load_dotenv()
 from tapeagents.dialog_tape import DialogTape, UserStep
 from tapeagents.orchestrator import main_loop
+load_dotenv()
 
 #LLM
 open_router_api_key = os.environ["OPEN_ROUTER_API_KEY"]
